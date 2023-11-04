@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center">Weather App</h1>
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-6">
+        <div class="input-group mb-3">
+          <input type="text" id="cityInput" class="form-control" placeholder="Enter City Name" aria-label="City Name" aria-describedby="searchButton">
+          <button class="btn btn-primary" id="searchButton" type="button">Search</button>
+        </div>
+        <div id="weatherData" class="card" style="display: none;">
+          <div class="card-body">
+            <h2 class="card-title">Weather in <span id="cityName"></span></h2>
+            <p class="card-text">Temperature: <span id="temperature"></span>&deg;C</p>
+            <p class="card-text">Humidity: <span id="humidity"></span>%</p>
+            <p class="card-text">Description: <span id="description"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    document.getElementById('searchButton').addEventListener('click', () => {
+      const apiKey = 'ad9730f9a8f889222bc9f714f2d8e7c2'; // Replace with your OpenWeatherMap API key
+      const city = document.getElementById('cityInput').value;
+      const baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
+
+      const params = {
+        q: city,
+        appid: apiKey,
+        units: 'metric', // Use Celsius
+      };
+
+      axios.get(baseUrl, { params })
+        .then((response) => {
+          if (response.status === 200) {
+            const weatherData = response.data;
+            document.getElementById('cityName').textContent = weatherData.name;
+            document.getElementById('temperature').textContent = weatherData.main.temp;
+            document.getElementById('humidity').textContent = weatherData.main.humidity;
+            document.getElementById('description').textContent = weatherData.weather[0].description;
+            document.getElementById('weatherData').style.display = 'block';
+          } else {
+            alert(`Error: ${response.status} - ${response.statusText}`);
+          }
+        })
+        .catch((error) => {
+          alert('An error occurred:', error);
+        });
+    });
+  </script>
+</body>
+</html>
